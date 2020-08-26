@@ -1,7 +1,9 @@
-# kubeadm-with-lxc
+# kubeadm-with-lxc or VMs
+
+## Note: If you want to setup K8s using kuebadm using VMs rather than LXC containers, ensure there is network connectivity between the VMs and start directly from step 5.1. Also, ignore LXC commands in step 6.
 
 
-#### Assumptions: you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC containers.
+#### Assumptions: you're using a Ubuntu 20.04 LTS as the host machine to host your LXC containers.
 
 
 ## 1. Verify LXC version:
@@ -71,11 +73,15 @@ lxc launch ubuntu:18.04 kubeadm-worker --profile k8s
     9  sudo apt-get update
    10  sudo apt-get install -y kubelet kubeadm kubectl
 ```   
+
 ####   Below command reqd. for kubelet to run properly
+
 ``` 
    11  sudo ln -s /dev/console /dev/kmsg
 ```
+
 ####   Get eth0 address to use for --apiserver-advertise-address param below:
+
 ```   
    12  ifconfig
 ```   
