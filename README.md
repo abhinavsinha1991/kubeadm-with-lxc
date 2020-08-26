@@ -52,6 +52,7 @@ name: k8s
 
   5.1. Run the next commands on the kubeadm-master container
 
+```
     1  sudo apt-get update
     2  cat <<EOF > /etc/sysctl.d/k8s.conf
        net.bridge.bridge-nf-call-ip6tables = 1
@@ -67,39 +68,46 @@ name: k8s
        EOF
     9  sudo apt-get update
    10  sudo apt-get install -y kubelet kubeadm kubectl
-   
+```   
    Below command reqd. for kubelet to run properly
+``` 
    11  sudo ln -s /dev/console /dev/kmsg
-   12  ifconfig
-   
-   
+```
    Get eth0 address to use for --apiserver-advertise-address param below:
+```   
+   12  ifconfig
+```   
+   
+```
    13  kubeadm init --apiserver-advertise-address=10.204.14.8 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=all
+```   
    
    Make note of the kubeadm join command after the above command successfuly completes.Looks something like this:
-   
+
+```   
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
-
+```
    
    Setup kubeconfig:
-   
+```   
    14 mkdir -p $HOME/.kube
       sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
       sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-   
+```
+```   
    14  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
    15  kubectl get po -n kube-system
    16  kubectl get nodes
    17  kubeadm token create --print-join-command
-
+```
 6. Exec to worker from a diff. terminal
 
 `lxc exec kubeadm-worker bash`
 
   6.1 Run next commands on the kubeadm-worker container
 
+```
     1  sudo apt-get update
     2  cat <<EOF > /etc/sysctl.d/k8s.conf
        net.bridge.bridge-nf-call-ip6tables = 1
@@ -116,12 +124,13 @@ name: k8s
     9  sudo apt-get update
    10  sudo apt-get install -y kubelet kubeadm kubectl
    11  sudo ln -s /dev/console /dev/kmsg
-   
+```   
    Run kubeadm join command copied from master:
-   
+
+```
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
-
+```
  7. Once the join command succeeds, go back to masteer terminal and verfiy node has joined:
  
  `kubeclt get nodes -o wide`
