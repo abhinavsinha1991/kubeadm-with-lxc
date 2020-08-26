@@ -136,7 +136,7 @@ lxc launch ubuntu:18.04 kubeadm-worker --profile k8s
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
 ```
-## 7. Once the join command succeeds, go back to master terminal and verfiy if the worker node has joined:
+## 7. Once the join command succeeds, go back to master terminal and verify if the worker node has joined:
  
  `kubeclt get nodes -o wide`
 
