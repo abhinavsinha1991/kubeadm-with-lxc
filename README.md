@@ -4,7 +4,7 @@
 Assuming you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC containers:
 
 
-1. Verify LXC version:
+## 1. Verify LXC version:
 
 `lxc version`
 
@@ -13,7 +13,7 @@ Assuming you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC co
  Server version: 4.0.3
 ```
 
-2. Add a profile like below:
+## 2. Add a profile like below:
 
 ```
 config:
@@ -37,20 +37,20 @@ devices:
 name: k8s
 ```
 
-3. Verify profile contents:
+## 3. Verify profile contents:
  
  `lxc profile show k8s`
 
-4. Create two containers for kuebadm setup - master and worker 
+## 4. Create two containers for kuebadm setup - master and worker 
 
 `lxc launch ubuntu:18.04 kubeadm-master --profile k8s`
 `lxc launch ubuntu:18.04 kubeadm-worker --profile k8s`
 
-5. Exec to master:
+## 5. Exec to master:
 
 `lxc exec kubeadm-master bash`
 
-  5.1. Run the next commands on the kubeadm-master container
+### 5.1. Run the next commands on the kubeadm-master container
 
 ```
     1  sudo apt-get update
@@ -101,11 +101,12 @@ name: k8s
    16  kubectl get nodes
    17  kubeadm token create --print-join-command
 ```
-6. Exec to worker from a diff. terminal
+
+## 6. Exec to worker from a diff. terminal
 
 `lxc exec kubeadm-worker bash`
 
-  6.1 Run next commands on the kubeadm-worker container
+### 6.1 Run next commands on the kubeadm-worker container
 
 ```
     1  sudo apt-get update
@@ -131,7 +132,7 @@ name: k8s
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
 ```
- 7. Once the join command succeeds, go back to masteer terminal and verfiy node has joined:
+ ## 7. Once the join command succeeds, go back to masteer terminal and verfiy node has joined:
  
  `kubeclt get nodes -o wide`
 
