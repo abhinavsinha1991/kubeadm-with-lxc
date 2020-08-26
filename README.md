@@ -14,6 +14,7 @@ Assuming you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC co
 ```
 
 2. Add a profile like below:
+
 ```
 config:
   limits.cpu: "2"
@@ -35,20 +36,21 @@ devices:
     type: disk
 name: k8s
 ```
+
 3. Verify profile contents:
  
  `lxc profile show k8s`
+
 4. Create two containers for kuebadm setup - master and worker 
 
 `lxc launch ubuntu:18.04 kubeadm-master --profile k8s`
 `lxc launch ubuntu:18.04 kubeadm-worker --profile k8s`
 
-
 5. Exec to master:
 
 `lxc exec kubeadm-master bash`
 
-5.1. run the next commands on the kubeadm-master container
+  5.1. Run the next commands on the kubeadm-master container
 
     1  sudo apt-get update
     2  cat <<EOF > /etc/sysctl.d/k8s.conf
@@ -96,7 +98,7 @@ name: k8s
 
 `lxc exec kubeadm-worker bash`
 
-6.1 Run next commands on the kubeadm-worker container
+  6.1 Run next commands on the kubeadm-worker container
 
     1  sudo apt-get update
     2  cat <<EOF > /etc/sysctl.d/k8s.conf
@@ -122,5 +124,5 @@ name: k8s
 
  7. Once the join command succeeds, go back to masteer terminal and verfiy node has joined:
  
-    kubeclt get nodes -o wide
+ `kubeclt get nodes -o wide`
 
