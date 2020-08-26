@@ -1,7 +1,7 @@
 # kubeadm-with-lxc
 
 
-Assuming you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC containers:
+#### Assumptions: you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC containers.
 
 
 ## 1. Verify LXC version:
@@ -13,7 +13,7 @@ Assuming you're using a Ubuntu 20.04 LTS as the host mahcine to host your LXC co
  Server version: 4.0.3
 ```
 
-## 2. Add a profile like below:
+## 2. Add a LXC profile like below(very important step or the containers won't allow running kubelet):
 
 ```
 config:
@@ -37,14 +37,16 @@ devices:
 name: k8s
 ```
 
-## 3. Verify profile contents:
+## 3. Verify profile contents created in step 2:
  
- `lxc profile show k8s`
+`lxc profile show k8s`
 
-## 4. Create two containers for kuebadm setup - master and worker 
+## 4. Create two LXC containers for kuebadm setup - master and worker
 
-`lxc launch ubuntu:18.04 kubeadm-master --profile k8s`
-`lxc launch ubuntu:18.04 kubeadm-worker --profile k8s`
+```
+lxc launch ubuntu:18.04 kubeadm-master --profile k8s
+lxc launch ubuntu:18.04 kubeadm-worker --profile k8s
+```
 
 ## 5. Exec to master:
 
@@ -69,11 +71,11 @@ name: k8s
     9  sudo apt-get update
    10  sudo apt-get install -y kubelet kubeadm kubectl
 ```   
-   Below command reqd. for kubelet to run properly
+####   Below command reqd. for kubelet to run properly
 ``` 
    11  sudo ln -s /dev/console /dev/kmsg
 ```
-   Get eth0 address to use for --apiserver-advertise-address param below:
+####   Get eth0 address to use for --apiserver-advertise-address param below:
 ```   
    12  ifconfig
 ```   
@@ -82,24 +84,26 @@ name: k8s
    13  kubeadm init --apiserver-advertise-address=10.204.14.8 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=all
 ```   
    
-   Make note of the kubeadm join command after the above command successfuly completes.Looks something like this:
+####   Make note of the kubeadm join command after the above command successfully completes. Looks something like this:
 
 ```   
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
 ```
    
-   Setup kubeconfig:
+####   Setup kubeconfig:
+
 ```   
    14 mkdir -p $HOME/.kube
       sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
       sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+
 ```   
-   14  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-   15  kubectl get po -n kube-system
-   16  kubectl get nodes
-   17  kubeadm token create --print-join-command
+   15  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+   16  kubectl get po -n kube-system
+   17  kubectl get nodes
+   18  kubeadm token create --print-join-command
 ```
 
 ## 6. Exec to worker from a diff. terminal
@@ -126,13 +130,16 @@ name: k8s
    10  sudo apt-get install -y kubelet kubeadm kubectl
    11  sudo ln -s /dev/console /dev/kmsg
 ```   
-   Run kubeadm join command copied from master:
+####   Run kubeadm join command copied from master:
 
 ```
    kubeadm join 10.204.14.8:6443 --token xcjw5r.1vft727wrqpanvxn \
     --discovery-token-ca-cert-hash sha256:55a75587a23eaa641edcc9966d2b8eb9b05e5b0f526178c90b15358a10f402d1
 ```
- ## 7. Once the join command succeeds, go back to masteer terminal and verfiy node has joined:
+## 7. Once the join command succeeds, go back to master terminal and verfiy if the worker node has joined:
  
  `kubeclt get nodes -o wide`
 
+## 8. Verify Kubernetes components' health
+ 
+ `kubeclt get cs`
